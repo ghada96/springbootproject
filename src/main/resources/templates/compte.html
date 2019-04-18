@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:layout="http://www.w3.org/1999/xhtml"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../static/bootstrap.css" th:href="@{/bootstrap.css}"/>
+
+</head>
+<body>
+<header>
+    <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <ul class="nav navbar-nav">
+                <li> <a th:href="@{/operations}"> Operations </a> </li>
+                <li> <a th:href="@{/comptes}"> Comptes </a> </li>
+                <li> <a th:href="@{/clients}">Clients</a> </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li> <a th:href="@{/login?Logout}"> Logout </a> </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<div layout:fragment="content">
+    <div class="col-md-6"> <!--  càd , la moitier -->
+
+        <div class="panel panel-danger">
+            <div class="panel-heading"> Consultation d'un compte</div>
+            <div class="panel-body">
+                <form th:action="@{/consultercompte}" method="get">
+                    <div>
+                    <label>code compte </label>
+                    <input type="text" name="codecompte">
+                    <button type="submit" class="btn btn-danger">ok</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <div class="panel panel-danger" th:if="${compte}">
+            <div class="panel-heading"> informations sur un compte</div>
+            <div class="panel-body">
+
+                <div>
+                    <label>code : </label>
+                    <label th:text="${compte.code}"></label>
+                </div>
+                <div>
+                    <label>date de création : </label>
+                    <label th:text="${compte.dateCreation}"></label>
+                </div>
+                <div>
+                    <label>solde : </label>
+                    <label th:text="${compte.solde}"></label>
+                </div>
+                <div>
+                    <label>type de compte : </label>
+                    <label th:text="${compte.class.simpleName}"></label>
+                </div>
+                <div th:if="${compte.class.simpleName=='CompteCourant'}">
+                    <label>decouvert  : </label>
+                    <label th:text="${compte.decouvert}"></label>
+                </div>
+                <div th:if="${compte.class.simpleName=='CompteEpargne'}">
+                    <label>taux  : </label>
+                    <label th:text="${compte.taux}"></label>
+                </div>
+            </div>
+        </div>
+        <div  sec:authorize="hasRole('ROLE_ADMIN')">
+        <div class="panel panel-danger" th:if="${compte}">
+            <div class="panel-heading"> operation d'un compte</div>
+            <div class="panel-body">
+                <form th:action="@{/saveOperation}" method="post">
+                    <div>
+                        <label>compte</label>
+                        <input type="hidden" name="codecompte" th:value="${codecompte}">
+                        <label th:text="${compte.code}"></label>
+                    </div>
+                    <div>
+                        <input type="radio" name="typeOperation" value="vers" checked="checked" onchange="document.getElementById('forvirement').style.display='none'">
+                        <label>versement</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="typeOperation" value="vir" onchange="document.getElementById('forvirement').style.display='block'">
+                        <label>virement</label>
+                    </div>
+
+                    <div>
+                        <input type="radio" name="typeOperation" value="retrait" onchange="document.getElementById('forvirement').style.display='none'">
+                        <label>retrait</label>
+                    </div>
+                    <div id="forvirement" style="display: none">
+                        <label >vers : </label>
+                        <input type="text" name="codecompte2">
+
+                    </div>
+                    <div>
+                        <label>montant : </label>
+                        <input type="text" name="montant" >
+
+                    </div>
+                    <div class="text-danger"  th:text="${#httpServletRequest.getParameter('error')}"></div><!--reference d'un objet de la contexte de servlet -->
+                    <button type="submit" class="btn btn-danger">save</button>
+                </form>
+            </div>
+        </div>
+        </div>
+
+
+        <div class="panel panel-danger" th:if="${compte}">
+            <div class="panel-heading"> liste des operations</div>
+            <div class="panel-body">
+                <table class="table table-striped">
+                    <tr>
+                        <th>Num </th>
+                        <th>type</th>
+                        <th>date</th>
+                        <th>montant</th>
+                    </tr>
+                    <tr th:each="o:${listoperation}">
+                        <td th:text="${o.numoperation}"></td>
+                        <td th:text="${o.class.simpleName}"></td>
+                        <td th:text="${o.dateOperation}"></td>
+                        <td th:text="${o.montant}"></td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

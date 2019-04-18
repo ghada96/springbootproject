@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>client</title>
+    <link rel="stylesheet" href="../static/bootstrap.css" th:href="@{/bootstrap.css}"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+
+    <script type="text/javascript" src="/static/application/app.module.js" th:src="@{/application/app.module.js}"></script>
+    <script type="text/javascript" src="/static/application/client.controller.js" th:src="@{/application/client.controller.js}"></script>
+</head>
+<body ng-app="app" ng-controller="ClientController as vm" >
+<header>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Client application side</a>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="container">
+<table class="table table-striped">
+    <tr>
+        <th>code</th><th>nom du client</th>
+    </tr>
+    <tr ng-repeat="c in vm.listClient">
+        <td>{{c.codeClient}}</td>
+        <td>{{c.nomClient}}</td>
+    </tr>
+</table>
+</div>
+
+</body>
+</html>
